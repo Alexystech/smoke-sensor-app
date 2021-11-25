@@ -3,6 +3,7 @@ import { timer } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { Data } from './model/data';
 import { SensorDataService } from './service/sensor-data.service';
+import { HostListener } from "@angular/core";
 
 @Component({
   selector: 'app-root',
@@ -11,7 +12,17 @@ import { SensorDataService } from './service/sensor-data.service';
 })
 export class AppComponent implements OnInit{
 
-  view: [number, number] = [1000, 500];
+  screenHeight!: number;
+  screenWidth!: number;
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event?: any) {
+    this.screenHeight = window.innerHeight;
+    this.screenWidth = window.innerWidth;
+    this.view = [this.screenWidth, 400];
+  }
+
+  view: [number, number] = [1000,400];
 
   // options
   legend: boolean = false;
@@ -39,10 +50,12 @@ export class AppComponent implements OnInit{
 
   constructor(
     public sensorDataService: SensorDataService
-  ) {}
+  ) {
+    this.onResize();
+  }
 
   ngOnInit(): void {
-
+    
     this.updateChart();
 
   }
